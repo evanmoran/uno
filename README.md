@@ -2,14 +2,14 @@
     | | |   | . |
     |___|_|_|___|
 
-The smallest unit testing framework possible:
+The simplest unit testing framework possible:
 
 * One file `uno.js`
 * One function `uno`
 * No dependencies
-* Outputs to console.log (configurable)
+* Results output to console.log
 
-It is also tries to be helpful:
+It is also helpful!
 
 * Uno hooks into other unit testing frameworks and does the right thing to make them work too.
 * Uno auto names tests using the function name and arguments
@@ -20,6 +20,20 @@ Supported unit testing frameworks:
 * fireunit (in progress)
 * junit (in progress)
 
-Download now!
+Install by source:
 
-* uno.js
+* [uno.js](https://raw.github.com/evanmoran/uno/master/uno.js)
+
+Install to node:
+
+    npm install uno
+    
+Usage in node:
+
+    uno = require('uno')
+    
+    uno(Math.round, [1.5], 2)
+    
+   
+    
+    
