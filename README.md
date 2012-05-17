@@ -1,7 +1,7 @@
-     _ _ ___ ___ 
+     _ _ ___ ___
     | | |   | . |
     |___|_|_|___|
-                       
+
 The smallest unit testing framework possible:
 
 * One file `uno.js`
@@ -11,14 +11,15 @@ The smallest unit testing framework possible:
 
 It is also tries to be helpful:
 
-* Uno hooks into other unit testing frameworks and does the right thing to make them work too. 
-* For most testing uno is all you need!
+* Uno hooks into other unit testing frameworks and does the right thing to make them work too.
+* Uno auto names tests using the function name and arguments
 
-Supported unit testing frameworks: 
+Supported unit testing frameworks:
 
-* qunit
-* fireunit
+* qunit (in progress)
+* fireunit (in progress)
+* junit (in progress)
 
 Download now!
 
-* uno.js (download link)
+* uno.js
