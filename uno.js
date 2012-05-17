@@ -7,14 +7,7 @@
 //      uno.js is freely distributable under the MIT license.
 //      http://github.com/evanmoran/uno
 //
-//      Value testing:
-//
-//          uno(name, value, expected)
-//
-//          uno("Math.pi == {expected}", Math.pi, 3.14);
-//              -> "Uno test passed: Math.PI == 3.14"
-//
-//      Function testing (with automatic naming)
+//      Function testing (automatic naming)
 //
 //          uno(fn, args, expected)
 //
@@ -22,19 +15,26 @@
 //          uno(sum, [1,2], 3);
 //              -> "Uno test passed: sum(1,2) == 3"
 //
-//      Function testing (with a custom name):
+//      Function testing (custom name):
 //
 //          uno(name, fn, args, expected)
 //
 //          uno("square({args}) == {expected}", function(a){a*a}, [3], 9)
 //              -> "Uno test passed: square(3) == 9"
 //
-//      Method testing:
+//      Method testing (custom name):
 //
 //          uno(name, object, method, args, expected)
 //
 //          uno("Math.{method}({args}) == {expected}", Math, Math.round, [1.5], 2);
 //              -> "Uno test passed: Math.round(1.5) == 2"
+//
+//      Value testing: (not yet implemented)
+//
+//          uno(name, value, expected)
+//
+//          uno("Math.pi == {expected}", Math.pi, 3.14);
+//              -> "Uno test passed: Math.PI == 3.14"
 //
 //      Profiling (not yet implemented)
 //
@@ -48,27 +48,39 @@
 
 (function () {
 
-    //
-    // Helper methods:
+    ////////////////////////////////////////////////////////////////////////////
+    // uno function
+    ////////////////////////////////////////////////////////////////////////////
+
+    // Current version.
+    var VERSION = '0.0.1';
+
+    // Establish the root object, `window` in the browser, or `global` on the server.
+    var root = this;
+
+    // Save the previous value of the `_` variable.
+    var previous = root.uno;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // uno helpers
+    ////////////////////////////////////////////////////////////////////////////
     //
     // Portions of these helper methods were inspired or borrowed from underscore:
     // http://github.com/documentcloud/underscore
-    //
-
+    var _isUndefined = function(obj) { return obj === void 0; };
+    var _isNull = function(obj) { return obj === null; };
     var _isNaN = function (obj) { return obj !== obj; };
-    var _isDate = function (obj) { return !!(obj && obj.getTimezoneOffset && obj.setUTCFullYear); };
-    var _isRegExp = function (obj) { return !!(obj && obj.test && obj.exec && (obj.ignoreCase || obj.ignoreCase === false)); };
-    var _isElement = function(obj){ return !!(obj && obj.nodeType == 1); };
-    var _isArguments = function(obj){ return !!(obj && Object.prototype.hasOwnProperty.call(obj, 'callee')); };
-    var _isString = function(obj) { return !!(obj === '' || (obj && obj.charCodeAt && obj.substr)); };
+    var _isBoolean = function(obj) { return obj === true || obj === false || toString.call(obj) == '[object Boolean]' };
     var _isNumber = function(obj) { return !!(obj === 0 || (obj && obj.toExponential && obj.toFixed)); };
     var _isFinite = function(obj) { return _isNumber(obj) && isFinite(obj); };
     var _isInfinity = function(obj){ return _isNumber(obj) && !isFinite(obj) && !_isNaN(obj); };
-    var _isBoolean = function(obj) { return obj === true || obj === false; };
-    var _isNull = function(obj) { return obj === null; };
+    var _isString = function(obj) { return !!(obj === '' || (obj && obj.charCodeAt && obj.substr)); };
+    var _isDate = function (obj) { return !!(obj && obj.getTimezoneOffset && obj.setUTCFullYear); };
+    var _isRegExp = function (obj) { return !!(obj && obj.test && obj.exec && (obj.ignoreCase || obj.ignoreCase === false)); };
+    var _isElement = function(obj){ return !!(obj && obj.nodeType == 1); };
     var _isFunction = function(obj) { return typeof obj === 'function'; };
     var _isArray = Array.isArray || function(obj) { return toString.call(obj) == '[object Array]'; };
-    var _isUndefined = function(obj) { return obj === void 0; };
+    var _isArguments = function(obj){ return !!(obj && Object.prototype.hasOwnProperty.call(obj, 'callee')); };
     var _has = function(obj, key) { return Object.prototype.hasOwnProperty.call(obj, key); };
 
     // _each: Iterate over an object
@@ -140,9 +152,9 @@
         // Compare regular expressions.
         if (_isRegExp(a) && _isRegExp(b))
             return a.source === b.source &&
-             a.global === b.global &&
-             a.ignoreCase === b.ignoreCase &&
-             a.multiline === b.multiline;
+                a.global === b.global &&
+                a.ignoreCase === b.ignoreCase &&
+                a.multiline === b.multiline;
         // If a is not an object by this point, we can't handle it.
         if (atype !== 'object') return false;
         // Check for different array lengths before comparing contents.
@@ -159,16 +171,17 @@
    // _typeOf: Mimic behavior of built-in typeof operator using improved underscore type detection
     var _typeOf = function(any)
     {
-        if (_isNull(any)) return "null";
+        if (_isNull(any))           return "null";
         else if (_isUndefined(any)) return "undefined";
-        else if (_isInfinity(any)) return "infinity";
-        else if (_isNumber(any)) return "number";
-        else if (_isNaN(any)) return "nan";
-        else if (_isString(any)) return "string";
-        else if (_isFunction(any)) return "function";
-        else if (_isArray(any)) return "array";
-        else if (_isRegExp(any)) return "regexp";
-        else if (_isDate(any)) return "date";
+        else if (_isInfinity(any))  return "infinity";
+        else if (_isNaN(any))       return "nan";
+        else if (_isBoolean(any))   return "boolean";
+        else if (_isNumber(any))    return "number";
+        else if (_isString(any))    return "string";
+        else if (_isFunction(any))  return "function";
+        else if (_isArray(any))     return "array";
+        else if (_isRegExp(any))    return "regexp";
+        else if (_isDate(any))      return "date";
         return "object";
     }
 
@@ -200,23 +213,23 @@
                 // Recurse through elements
                 var domList = any.get();
                 for (i = 0; i < domList.length; i++)
-                out += (i === 0 ? "" : ", ") + arguments.callee(domList[i]);
+                    out += (i === 0 ? "" : ", ") + arguments.callee(domList[i]);
                 return "[" + out + "]";
 
             case "object":
                 // Use native JSON object
                 if (JSON && _isFunction(JSON.stringify))
-                return JSON.stringify(any);
+                    return JSON.stringify(any);
                 // Use toString method
                 return any.toString();
 
             case "array":
                 // Use JSON if possible
                 if (JSON && _isFunction(JSON.stringify))
-                return JSON.stringify(any);
+                    return JSON.stringify(any);
                 // Recurse through array
                 for (i = 0; i < any.length; i++)
-                out += (i === 0 ? "" : ",") + arguments.callee(any[i]);
+                    out += (i === 0 ? "" : ",") + arguments.callee(any[i]);
                 return "[" + out + "]";
         }
     }
@@ -254,9 +267,9 @@
         return out ? out[1] : "function";
     };
 
-    //////////////////////////////////////////////////////////////////////
-    // uno
-    //////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    // uno function
+    ////////////////////////////////////////////////////////////////////////////
 
     var defaults = {
         group: "Uno",
@@ -356,6 +369,19 @@
         return pass;
     };
 
+    ////////////////////////////////////////////////////////////////////////////
+    // uno object
+    ////////////////////////////////////////////////////////////////////////////
+
+    // Save version
+    uno.VERSION = VERSION;
+
+    // No conflict
+    uno.noConflict = function() {
+        root.uno = previous;
+        return this;
+    };
+
     // Private store for user settings
     uno._settings = _settings
 
@@ -373,7 +399,17 @@
         return uno;
     }
 
-    // uno("method: {method}, function: {function}, fn: {fn}, f: {f}, input: {input}, in: {in}, args: {args}, arguments: {arguments}, expected: {expected}, result: {result}, output: {output}, out: {out}", Math.round, [1.5], 2)
+    // Export uno for Node.js
+    if (typeof exports !== 'undefined') {
+        if (typeof module !== 'undefined' && module.exports) {
+            exports = module.exports = uno;
+        }
+        exports.uno = uno;
+    }
+    // Export uno globally for browser
+    else {
+        root['uno'] = uno;
+    }
 
 })();
 

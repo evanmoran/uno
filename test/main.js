@@ -25,6 +25,9 @@ function main()
         return pass;
     }
 
+    // General tests
+    test( "_.isString(uno.VERSION)", true)
+
     // Function tests
     test( "uno(Math.round, [1.5], 2)", true);
     test( "uno('Math.{fn}', Math.round, [2.1], 2)", true)
