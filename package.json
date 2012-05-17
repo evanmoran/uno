@@ -1,0 +1,10 @@
+{
+  "name"          : "uno",
+  "description"   : "The simplest unit testing framework possible.",
+  "homepage"      : "http://github.com/evanmoran/uno/",
+  "keywords"      : ["testing", "test", "unit", "server", "client", "browser"],
+  "author"        : "Evan Moran <evan@evanmoran.com>",
+  "repository"    : {"type": "git", "url": "git://github.com/evanmoran/uno.git"},
+  "main"          : "uno.js",
+  "version"       : "0.0.1"
+}
