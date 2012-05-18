@@ -2,33 +2,98 @@
     | | |   | . |
     |___|_|_|___|
 
-The simplest unit testing framework possible:
+## Uno: The simplest unit testing framework possible! ##
 
 * One file `uno.js`
 * One function `uno`
 * No dependencies
-* Results output to console.log
+* Results are printed to console.log
 
-It is also helpful!
+## How to test _functions_ ##
+
+#### Example: Math.round function: ####
+    
+    uno(Math.round, [1.5], 2)
+    
+Output:
+
+       logs:  "Uno test passed: round(1.5) == 2"
+    returns:  true
+
+Usage: 
+
+    uno(name, fn, args, expected)
+
+* `name` (optional) The name of the test. Excepts {inputs}, see below.
+* `fn` The function to test
+* `args` A list of arguments passed to `fn`
+* `expected` What `fn(args)` should return
+
+## How to test _methods_ ##
+
+#### Example: Date object: ####
+
+    var date = new Date("October 31, 2012");
+    uno(date, date.getFullYear, [], 2012)
+
+Output:
+
+       logs:  "Uno test passed: object.getFullYear() == 2012"
+    returns:  true
+
+Usage:
+
+    uno(name, object, method, args, expected)
+
+* `name` (optional) The name of the test. Excepts {inputs}, see below.
+* `object` The object to test
+* `method` The method to test (in the context of `object`)
+* `args` A list of arguments passed to `method`
+* `expected` What `object.method(args)` should return
+
+#### Example: Date object with a custom name: ####
+
+    var date = new Date("October 31, 2012");
+    uno('date.{method}({args}) == {expected}', date, date.getFullYear, [], 2012)
+
+Output:
+
+       logs:  "Uno test passed: date.getFullYear() == 2012"
+    returns:  true
+
+Names can take the following {inputs}:
+
+    {method}             // aliases: {function} {fn} {f}
+    {args}               // aliases: {arguments} {input} {in}
+    {result}             // aliases: {output} {out}
+    {expected}           // aliases: Any ideas?
+
+## How to test _values_ ##
+_(Almost done coding this)_
+
+## How to profile ##
+_(Still coding this one)_
+
+## But wait... there is more! ##
 
 * Uno hooks into other unit testing frameworks and does the right thing to make them work too.
 * Uno auto names tests using the function name and arguments
 
-Supported unit testing frameworks:
+## Supported unit testing frameworks ##
 
-* qunit (in progress)
-* fireunit (in progress)
-* junit (in progress)
+* qunit (close to finished)
+* fireunit (close to finished)
+* junit (just starting support)
 
-Install by source:
+## Install by source ##
 
 * [uno.js](https://raw.github.com/evanmoran/uno/master/uno.js)
 
-Install to node:
+## Install to node ##
 
     npm install uno
     
-Usage in node:
+## Usage in node ##
 
     uno = require('uno')
     
