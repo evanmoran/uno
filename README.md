@@ -51,6 +51,26 @@ Usage:
 * `args` A list of arguments passed to `method`
 * `expected` What `object.method(args)` should return
 
+
+
+## {inputs} ##
+
+All `name` options support {input} strings. Here is a full list:
+
+    {method}             // alias: {function} {fn} {f}
+    {args}               // alias: {arguments} {input} {in}
+    {result}             // alias: {output} {out}
+    {expected}
+
+#### Example: Math.round function with custom name
+
+    uno('Math.{fn}({args}), result: {result}, expected: {expected}', Math.round, [1.5], 2)
+
+Output:
+
+       logs:  "Uno test passed: Math.round(1.5), result: 2, expected: 2]"
+    returns:  true
+
 #### Example: Date object with a custom name: ####
 
     var date = new Date("October 31, 2012");
@@ -61,12 +81,12 @@ Output:
        logs:  "Uno test passed: date.getFullYear() == 2012"
     returns:  true
 
-Names can take the following {inputs}:
 
-    {method}             // aliases: {function} {fn} {f}
-    {args}               // aliases: {arguments} {input} {in}
-    {result}             // aliases: {output} {out}
-    {expected}           // aliases: Any ideas?
+
+
+
+#### Full {input} list ####
+
 
 ## How to test _values_ ##
 _(Almost done coding this)_
@@ -97,7 +117,7 @@ _(Still coding this one)_
 
     uno = require('uno')
     
-    uno(Math.round, [1.5], 2)
+    uno(Math.round, [1.5], 2)      // logs: "Uno test passed: round(1.5) == 2"
     
    
     
