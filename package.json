@@ -6,5 +6,5 @@
   "author"        : "Evan Moran <evan@evanmoran.com>",
   "repository"    : {"type": "git", "url": "git://github.com/evanmoran/uno.git"},
   "main"          : "uno.js",
-  "version"       : "0.0.1"
+  "version"       : "0.0.2"
 }

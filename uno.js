@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//      uno.js (1.0.0)
-//      The simplest unit testing framework possible.
+//      uno - The simplest unit testing framework possible.
 //
 //      (c) 2012 Evan Moran
 //      uno.js is freely distributable under the MIT license.
@@ -53,7 +52,7 @@
     ////////////////////////////////////////////////////////////////////////////
 
     // Current version.
-    var VERSION = '0.0.1';
+    var VERSION = '0.0.2';
 
     // Establish the root object, `window` in the browser, or `global` on the server.
     var root = this;
