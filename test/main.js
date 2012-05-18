@@ -31,9 +31,14 @@ function main()
     // Function tests
     test( "uno(Math.round, [1.5], 2)", true);
     test( "uno('Math.{fn}', Math.round, [2.1], 2)", true)
+    test( "uno('Math.{fn}({args}), result: {result}, expected: {expected}', Math.round, [1.5], 2)", true)
 
     // Object tests
     var obj = {name: "Evan", age: function(){return 27;}, weight: 160};
-    test( "uno(obj, obj.age, [], 27)", true);
-    test( "uno('Person.age == {expected}', obj, obj.age, [], 27)", true);
+    test( "uno(obj, obj.age, [], 27)", true );
+    test( "uno('Person.age == {expected}', obj, obj.age, [], 27)", true );
+
+    // Date object tests
+    var date = new Date("October 31, 2012")
+    test( "uno('date.getFullYear() == {expected}', date, date.getFullYear, [], 2012);", true );
 }

@@ -11,7 +11,7 @@
 //
 //          uno(fn, args, expected)
 //
-//          function sum(a,b){a+b}
+//          function sum(a,b){return a+b;}
 //          uno(sum, [1,2], 3);
 //              -> "Uno test passed: sum(1,2) == 3"
 //
@@ -293,16 +293,34 @@
         // string, function, array, ANY             4       uno("sum{args} == {expected}", sum, [1,2,3], 6)
         // object, function, array, ANY             4       uno(person, person.name, [], "Steve")
         // string, object, function, array, ANY     5       uno("person.name == {expected}", person, person.name, [], "Steve");
-
         // Interpret arguments
         var a = arguments;
         var len = a.length;
         var i = 0;
+
+        // Argument `name` (optional)
         var name = _isString(a[i]) ? a[i++] : "{method}({args}) == {expected}";
+
+        // Argument `object` (optional)
         var object = typeof a[i] === "object" ? a[i++] : null;
-        var fn = _isFunction(a[len - 3]) ? a[len - 3] : null;
-        var args = _isArray(a[len - 2]) ? a[len - 2] : null;
-        var expected = a[len - 1];
+
+        // Argument `function` (not optional)
+        var fn = a[i]
+        if(!_isFunction(fn))
+            throw "Uno argument error: `fn` is missing or not a function";
+
+        // Argument `args` (not optional)
+        var args = a[i+1]
+        if(!_isArray(args))
+            throw "Uno argument error: `args` is missing or not an [array]";
+
+        // Argument `expected` (not optional)
+        var expected = a[i+2]
+
+        // Argument `count` (optional)
+        var count = a[i+3]
+        if(!(count === undefined || _isNumber(count)))
+            throw "Uno argument error: `count` should be an integer or undefined"
 
         // Fail if arguments are invalid
         if (len < 3 || len > 5 || !name || !fn || !args)
